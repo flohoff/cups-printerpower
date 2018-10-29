@@ -1,0 +1,6 @@
+#!/bin/bash
+POWERFILE=/var/cache/cups/printerpoweron
+PRINTERPOWERON="sudo /usr/bin/sispmctl -o 2"
+
+date >>${POWERFILE}
+${PRINTERPOWERON}

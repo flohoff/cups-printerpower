@@ -1,0 +1,33 @@
+
+This is my solution to automatically turn on/off a laser printer connected
+to a USB controllable power socket.
+
+I use the cups "job-created" notification to issue a poweron. 15 Minutes
+after the last job has been queued and the queue is empty the printer will
+be turned off again.
+
+Installation
+============
+
+Move the `cups-notifier` to your cups notifier directory e.g. `/usr/lib/cups/notifier`
+on a standard Debian installation.
+
+Move the `printeron` and `printerpoweoff` scripts to `/usr/local/sbin`.
+
+Create a cron job to call `printerpoweroff` e.g. in `/etc/cron.d/printer`
+
+    */5 *	* * *	root	/usr/local/sbin/printerpoweroff | logger -t printer
+
+Then create a `subscriptions.conf` in the cups config directory - typically `/etc/cups/`
+
+    <Subscription 1>
+    Events all
+    Recipient poweron
+    PrinterName paperjam
+    LeaseDuration 0
+    Interval 0
+    ExpirationTime 0
+    </Subscription>
+
+This will send notifications on printer `paperkam`to the `poweron` notifier script.
+

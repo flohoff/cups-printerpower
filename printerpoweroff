@@ -1,0 +1,17 @@
+#!/bin/sh
+
+POWERFILE=/var/cache/cups/printerpoweron
+PRINTERPOWEROFF="/usr/bin/sispmctl -f 2"
+POWEROFFDELAY=900
+
+# Is the printer turned on?
+[ -e ${POWERFILE} ] || exit 0
+# Is there something still in the queue?
+[ $((`lpstat -o | wc -l`)) -eq 0 ] || exit 0
+# Poweroff delay 
+age=$((`date "+%s"` - `find ${POWERFILE} -printf "%C@" | cut -d. -f1`))
+
+if [ ${age} -gt ${POWEROFFDELAY} ]; then
+	${PRINTERPOWEROFF} 
+	rm ${POWERFILE}
+fi
